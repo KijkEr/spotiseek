@@ -1,4 +1,5 @@
 import logging
+import logging.config
 import time
 
 import yaml
@@ -8,21 +9,21 @@ from thefuzz import fuzz
 
 from spotiseek.database import insert_downloaded_songs
 
-with open("logging.yml", "r") as f:
+with open("./spotiseek/logging.yml", "r") as f:
     config = yaml.safe_load(f.read())
     logging.config.dictConfig(config)
 
 logger = logging.getLogger("spotiseek")
 
-API_HOST = "http://192.168.178.91:5030"
-SLSKD_API_KEY = "test"
+API_HOST = "http://localhost:5030"
+SLSKD_API_KEY = "EGkiYvu5H#r&#j%Pa3o2"
 
 
 class SoulSeek:
     def __init__(self) -> None:
         self.slskd = SlskdClient(API_HOST, SLSKD_API_KEY)
 
-    def download_songs(self, songs: dict):
+    def download_songs(self, songs: list):
         for song in songs:
             self.download_song(song=song)
 
@@ -54,10 +55,11 @@ class SoulSeek:
                     self.slskd.transfers.enqueue(username=username, files=[files])
                     logger.info(f"Downloading: {files.get('filename')}")
                     # Insert into DB
-                    insert_downloaded_songs(song.get("song_id"))
+                    insert_downloaded_songs(song.get("song_id"), song.get("song"))
                     logger.info(
                         f"Finished downloading: {song.get('song')} {' '.join(song.get('artists'))}"
                     )
+
                     break
             except IndexError:  # More specific error handling can be added here
                 logger.info(

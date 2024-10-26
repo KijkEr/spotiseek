@@ -104,7 +104,7 @@ def initialize_database():
 
     # Use a context manager to handle the database connection
     # Define the path to the directory containing SQL scripts
-    sql_dir = Path("queries/setup")
+    sql_dir = Path("spotiseek/queries/setup")
     if not sql_dir.exists():
         raise FileNotFoundError(f"The directory {sql_dir} does not exist.")
 
@@ -130,14 +130,18 @@ def initialize_database():
 def get_downloaded_songs() -> set:
     # Use a context manager to handle the database connection
     with DatabaseHandler(DATABASE_NAME) as db_handler:
-        downloaded_songs = db_handler.fetch_all("SELECT SongId FROM downloaded_songs")
-        song_ids = {row["SongId"] for row in downloaded_songs}
+        downloaded_songs = db_handler.fetch_all("SELECT song_id FROM downloaded_songs")
+        song_ids = {row["song_id"] for row in downloaded_songs}
 
     return song_ids
 
 
-def insert_downloaded_songs(song_id: int):
+def insert_downloaded_songs(song_id: str, song_name: str):
     with DatabaseHandler(DATABASE_NAME) as db_handler:
         db_handler.execute_query(
-            "INSERT INTO downloaded_songs(SongId) VALUES (?)", (song_id,)
+            "INSERT INTO downloaded_songs(song_id, song_name) VALUES (?,?)",
+            (
+                song_id,
+                song_name,
+            ),
         )

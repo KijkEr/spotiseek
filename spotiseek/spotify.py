@@ -23,6 +23,7 @@ def get_songs_to_download(playlist_name: str):
     songs = fetch_playlist_songs(playlist_id=playlist_id)
     downloaded_song_ids = get_downloaded_songs()
     songs = [s for s in songs if s.get("song_id") not in downloaded_song_ids]
+
     return songs
 
 

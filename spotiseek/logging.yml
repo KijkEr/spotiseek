@@ -14,17 +14,17 @@ handlers:
     formatter: simple
     stream: ext://sys.stdout
 
-  file:
-    class: logging.FileHandler
-    level: DEBUG
-    formatter: detailed
-    filename: logs/app.log
-    mode: a
+  # file:
+  #   class: logging.FileHandler
+  #   level: DEBUG
+  #   formatter: detailed
+  #   filename: logs/app.log
+  #   mode: a
 
 loggers:
-  cli_tool:
+  spotiseek:
     level: DEBUG
-    handlers: [console, file]
+    handlers: [console]
     propagate: no
 
 root:
